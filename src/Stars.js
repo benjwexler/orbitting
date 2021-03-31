@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useFrame, useLoader, useUpdate } from "react-three-fiber";
 
-const Stars = () => {
+const Stars = ({isPaused}) => {
 
 
 const pointsRef = useRef();
@@ -17,7 +17,7 @@ const pointsRef = useRef();
         Math.random() * 600 - 300
       );
       star.velocity = 0;
-      star.acceleration = 0.02;
+      star.acceleration = 0.025;
       _vertices.push(star)
     }
     return _vertices;
@@ -33,12 +33,13 @@ const pointsRef = useRef();
   // }, [])
 
   useFrame(() => {
+    if(isPaused) return;
     vertices.forEach(p => {
       // p.velocity += p.acceleration
       // p.z += p.velocity;
       p.z += p.acceleration
       
-      if (p.z > 100) {
+      if (p.z > -50) {
         p.z = -100;
         p.velocity = 0;
       }
@@ -61,7 +62,7 @@ const pointsRef = useRef();
       // attach="material" 
       color={0xaaaaaa}
       // color="blue"
-        size={0.2}
+        size={0.3}
         map={texture}
         // vertexColors size={10} sizeAttenuation={false}
       />

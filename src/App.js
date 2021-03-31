@@ -1,6 +1,7 @@
-import React, { useRef, useState, useLayoutEffect, Suspense } from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect, Suspense } from "react";
 //R3F
 import { Canvas, useFrame, useThree } from "react-three-fiber";
+import * as THREE from "three";
 // Deai - R3F
 // import { softShadows, MeshWobbleMaterial, OrbitControls } from "drei";
 //Components
@@ -9,8 +10,8 @@ import { Canvas, useFrame, useThree } from "react-three-fiber";
 import "./App.css";
 // React Spring
 import { useSpring, a } from "react-spring/three";
-import {MeshWobbleMaterial, OrbitControls} from '@react-three/drei'
-import MyBox from "./MyBox";
+import { MeshWobbleMaterial, OrbitControls } from '@react-three/drei'
+import Earth from "./Earth";
 import Sun from "./Sun";
 import Scene from "./Scene";
 // import Sun from './Sun';
@@ -24,8 +25,8 @@ function degrees_to_radians(degrees) {
   return degrees * (pi / 180);
 }
 
-export const SpinningMesh = ({ rotation, layers, position, mesh, scale, texture, children, onPointerOver, onPointerOut }) => {
-  
+export const SpinningMesh = ({ isPaused, rotation, layers, position, mesh, scale, texture, children, onPointerOver, onPointerOut }) => {
+
   // console.log('x', x)
   return (
     <a.mesh
@@ -40,12 +41,12 @@ export const SpinningMesh = ({ rotation, layers, position, mesh, scale, texture,
       castShadow>
       <sphereGeometry attach='geometry' args={[1, 16, 16]} />
       <MeshWobbleMaterial
-    attach="material"
-    factor={.3} // Strength, 0 disables the effect (default=1)
-    speed={1} // Speed (default=1)
-    map={texture}
-  />
-  {children}
+        attach="material"
+        factor={isPaused ? 0 : 0} // Strength, 0 disables the effect (default=1)
+        speed={1} // Speed (default=1)
+        map={texture}
+      />
+      {children}
       {/* <meshStandardMaterial map={texture}
         attach='material' /> */}
     </a.mesh>
@@ -53,27 +54,69 @@ export const SpinningMesh = ({ rotation, layers, position, mesh, scale, texture,
 };
 
 SpinningMesh.defaultProps = {
-  onPointerOut: () => {},
-  onPointerOver: () => {},
+  onPointerOut: () => { },
+  onPointerOver: () => { },
 }
 
 
 const App = () => {
-  const [cameraPosition, setCameraPosition] = useState({x: 0, y: 0, z: 120})
-  
+  const [cameraPosition, setCameraPosition] = useState({ x: 0, y: 0, z: 120 })
+  const [height, setHeight] = useState(11.5);
+  const [isPaused, setIsPaused] = useState(false);
+  const canvasRef = useRef();
+  const tooltipRef = useRef();
+
+  useEffect(() => {
+
+    const handleKeyDown = (ev) => {
+      if (ev.code !== 'Space') return;
+
+      setIsPaused(prevVal => !prevVal)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+
+  }, [])
+
+  //   function toScreenPosition(obj, camera)
+  // {
+  //     var vector = new THREE.Vector3();
+
+  //     var widthHalf = 0.5*canvasRef.current.style.width;
+  //     var heightHalf = 0.5*canvasRef.current.style.height;
+
+  //     obj.updateMatrixWorld();
+  //     vector.setFromMatrixPosition(obj.matrixWorld);
+  //     vector.project(camera);
+
+  //     vector.x = ( vector.x * widthHalf ) + widthHalf;
+  //     vector.y = - ( vector.y * heightHalf ) + heightHalf;
+
+  //     return { 
+  //         x: vector.x,
+  //         y: vector.y
+  //     };
+
+  // };
+
   // setInterval(() => {
 
-  //   setCameraPosition(prevVal => {
-  //     return {...prevVal, z: prevVal.z - 10}
-  //   })
+  //   // setHeight(prevVal => prevVal - .03 > 11.5 ? prevVal - .03 : 11.5)
+  //   // setCameraPosition(prevVal => {
+  //   //   return {...prevVal, z: prevVal.z - 10}
+  //   // })
 
   // }, 16)
 
- 
+
+
 
   return (
     <>
-    
+
       {/* <Header /> */}
       {/* <img src="earthTexture.jpg" /> */}
       {/* Our Scene & Camera is already built into our canvas */}
@@ -81,34 +124,56 @@ const App = () => {
         colorManagement
         shadowMap
         camera={{ position: [0, 0, 20], fov: 90 }}
+        onClick={() => setIsPaused(prevVal => !prevVal)}
+      // ref={canvasRef}
       >
-  <Scene />
+        <Scene
+          isPaused={isPaused}
+          canvasRef={canvasRef}
+          tooltipRef={tooltipRef}
+        // toScreenPosition={toScreenPosition}
+        />
         {/* Allows us to move the canvas around for different prespectives */}
         {/* <OrbitControls />/ */}
       </Canvas>
       <div style={{
-      position: 'absolute', minHeight: '11.5vh', width: '100vw', 
-      background: 'black',
-      // padding: 20,
-      // paddingTop: 30,
-    fontSize: 28,
-    fontWight: 400,
-    fontFamily: 'monospace',
-    top: 0,
-    display: 'flex',
-    // boxShadow: '5px 5px #20253e',
-    // borderBottom: '1px solid #30345e',
-    }}>
-      <div style={{padding: 20, marginTop: 'auto', marginBottom: 'auto'}}>Earth, Moon & Sun Animation</div>
-    </div>
+        position: 'absolute', minHeight: `${height}vh`, width: '100vw',
+        background: 'black',
+        // padding: 20,
+        // paddingTop: 30,
+        fontSize: 28,
+        fontWight: 400,
+        fontFamily: 'monospace',
+        top: 0,
+        display: 'flex',
+        // boxShadow: '5px 5px #20253e',
+        // borderBottom: '1px solid #30345e',
+      }}>
+        <div style={{ padding: 20, paddingLeft: 25, marginTop: 'auto', marginBottom: 'auto', display: 'flex', width: '100%' }}>
+
+          <div>{height <= 11.5 ? 'Earth, Moon & Sun Animation' : ''}</div>
+          <div style={{ marginLeft: 'auto', marginRight: 15 }}>
+            {/* <i onClick={() => setIsPaused(prevVal => !prevVal)} class={`fas ${isPaused ? 'fa-play' : 'fa-pause'}`} /> */}
+          </div>
+        </div>
+      </div>
       <div style={{
-        minHeight: '11.5vh', 
-        width: '100vw', 
-        background: 'black', 
+        minHeight: `${height}vh`,
+        width: '100vw',
+        background: 'black',
         bottom: 0, left: 0, position: 'absolute',
+        display: 'flex',
+        fontSize: 28,
+        fontWight: 400,
         // borderTop: '1px solid #30345e',
-        
-        }}></div>
+
+      }}>
+
+        <div style={{ margin: 'auto'}}>
+            <i onClick={() => setIsPaused(prevVal => !prevVal)} class={`fas ${isPaused ? 'fa-play' : 'fa-pause'}`} />
+          </div>
+      </div>
+      <div ref={tooltipRef} id="tooltip" style={{ position: 'absolute', color: 'white' }}>Sun</div>
     </>
   );
 };

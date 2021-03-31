@@ -6,9 +6,9 @@ import { SpinningMesh } from "./App";
 import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useLoader, useFrame } from "react-three-fiber";
 import { useSpring, a } from "react-spring/three";
-import { degrees_to_radians } from './MyBox';
+import { degrees_to_radians } from './Earth';
 
-const Sun = () => {
+const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
   const origX = 3
   const coords = useRef({ x: 0, y: 0, z: 0 });
   const angle = useRef(0);
@@ -16,7 +16,13 @@ const Sun = () => {
   const [hover, setHover] = useState(false)
   const [active, setActive] = useState(false)
 
-  const { scale } = useSpring({ scale: hover ? [6, 6, 6] : [3, 3, 3] })
+  const { scale, _spotlightIntensity } = useSpring({ 
+    scale: hover ? [4, 4, 4] : [3, 3, 3],
+    _spotlightIntensity: !hover ? .5 : .4,
+  }
+  )
+
+  console.log("HOVER", hover)
 
   // const { x } = useSpring({ x: hover ? 6 : 3 })
   // console.log('x', x)
@@ -24,6 +30,12 @@ const Sun = () => {
   const sunRef = useRef();
 
   useFrame(() => {
+    // const coords = toScreenPosition(mesh.current);
+    // if(tooltipRef && tooltipRef.current) {
+    //   tooltipRef.current.style.left = `${coords.x}px`
+    //   tooltipRef.current.style.top = `${coords.y}px`
+    // }
+    if(isPaused) return;
     // if(sunRef && sunRef.current) {
     mesh.current.rotateY(degrees_to_radians(.3))
     // }
@@ -31,7 +43,10 @@ const Sun = () => {
 
   const texture = useLoader(TextureLoader, 'sunTexture.jpg')
   // console.log('texture', texture)
-  const spotlightIntensity = 0.4;
+  const spotlightIntensity = .4
+  console.log('spo', spotlightIntensity)
+  // const { spotlightIntensity } = useSpring({ spotlightIntensity: hover ? 1.45 : .4 })
+  // const spotlightZ
   return (
     <>
     <spotLight
@@ -80,6 +95,7 @@ const Sun = () => {
       layers={2}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}
+      isPaused={isPaused}
       // mesh={sunRef}
       scale={useMemo(() => scale, [hover])} hover={hover} texture={texture} mesh={mesh} />
       </>

@@ -9,23 +9,12 @@ body {
 }
 
 #root {
-  /* width: 100vw; */
-  /* height: 100vh; */
   overflow: hidden;
 }
 
 canvas {
   position: absolute;
 }
-
-/* .scrollArea {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-} */
 
 @keyframes opacity {
   0%   {opacity: .99}
