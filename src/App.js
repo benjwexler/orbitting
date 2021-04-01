@@ -174,6 +174,33 @@ const App = () => {
           </div>
       </div>
       <div ref={tooltipRef} id="tooltip" style={{ position: 'absolute', color: 'white' }}>Sun</div>
+    <div
+      style={{
+        height: '30%',
+        // height: '100vh',
+        background: '#ffffff14',
+        maxWidth: 360,
+        width: '40%',
+        position: 'absolute',
+        top: `${height}vh`,
+        right: 0,
+        padding: 0,
+        color: 'white',
+        borderBottomLeftRadius: 5,
+      }}>
+        <h2
+          style={{
+            // background: '#111110',
+            background: '#111011',
+            margin: 0,
+            padding: 20,
+          }}
+        >Earth</h2>
+        <div style={{padding: '5px 20px'}}>
+        <p >Fun Facts:</p>
+        <p style={{padding: '0 15px', margin: '10px 0', fontSize: 20}}>Earth is 4.54 billion years old.</p>
+        </div>
+      </div>
     </>
   );
 };
