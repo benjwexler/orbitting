@@ -11,7 +11,7 @@ import * as THREE from "three";
 // Styles
 import "./App.css";
 // React Spring
-import { useSpring, a } from "react-spring/three";
+import { useSpring, a } from "@react-spring/three";
 import { MeshWobbleMaterial, OrbitControls } from '@react-three/drei'
 import Earth from "./Earth";
 import Sun from "./Sun";

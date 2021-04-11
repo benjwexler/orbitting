@@ -61,3 +61,29 @@ header {
     /* bottom, image */
     url(milkyWay.jpg) no-repeat center center fixed;;
 }
+
+.info {
+  transition: all .3s linear;
+}
+
+.info-body {
+  display: flex;
+  flex-direction: column;
+  /* transition: all .2s linear .05s; */
+}
+
+.timebar {
+  height: 10px;
+  width: 30%;
+  border: 1px solid white;
+  border-radius: 5px;
+  /* background: yellow; */
+}
+
+.timebar-inner {
+  width: 100%;
+  height: 100%;
+  background: white;
+  transform: scaleX(0);
+  transform-origin: left;
+}

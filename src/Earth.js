@@ -1,13 +1,14 @@
 
-import React, { useState, useRef, useMemo, Suspense } from 'react';
+import React, { useEffect, useState, useRef, useMemo, Suspense } from 'react';
 import {cloneDeep} from 'lodash';
 import * as THREE from "three";
 import { SpinningMesh } from "./App";
 
 import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useFrame, useLoader, useThree } from "react-three-fiber";
-import { useSpring, a } from "react-spring/three";
+import { useSpring, a } from "@react-spring/three";
 import { _toScreenPosition } from './helpers';
+import useStore from './context/store';
 
 export function degrees_to_radians(degrees) {
   var pi = Math.PI;
@@ -15,7 +16,10 @@ export function degrees_to_radians(degrees) {
 }
 
 const Earth = ({isPaused, tooltipRef}) => {
-  const { camera, viewport, size } = useThree()
+  // console.log("HOW OFTEN RE")
+  // const { camera, viewport, size } = useThree()
+  const { setActiveElement } = useStore();
+  // const setActiveElement = () => {}
   const origX = 14;
   const moonOrigX = 2;
   const coords = useRef({ x: origX, y: 0, z: 0 });
@@ -29,6 +33,11 @@ const Earth = ({isPaused, tooltipRef}) => {
   const moonMeshReal = useRef();
 
   const [hover, setHover] = useState(false)
+
+  useEffect(() => {
+    const activeElement = hover ? ({name: 'Earth'}) : undefined;
+    setActiveElement(activeElement)
+  }, [hover])
 
   useFrame(() => {
     //  const _coords = _toScreenPosition(earthMesh.current, camera, size);
@@ -79,7 +88,7 @@ if(earthMesh.current && earthMesh.current.getBoundingBox) {
   const moonTexture = useLoader(TextureLoader, 'moonTexture.jpg')
 
   const { scale, _spotlightIntensity } = useSpring({ 
-    scale: hover ? [2, 2, 2] : [.5, .5, .5],
+    scale: hover ? [1.5, 1.5, 1.5] : [.5, .5, .5],
   });
   // console.log('texture', texture)
   return (

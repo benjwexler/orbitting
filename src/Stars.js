@@ -24,7 +24,7 @@ const pointsRef = useRef();
 
   }, [])
 
-  console.log('vert', vertices)
+  // console.log('vert', vertices)
   
   const texture = useLoader(TextureLoader, 'star.png')
   const ref = useRef();
@@ -39,8 +39,8 @@ const pointsRef = useRef();
       // p.z += p.velocity;
       p.z += p.acceleration
       
-      if (p.z > -50) {
-        p.z = -100;
+      if (p.z > -40) {
+        p.z = -90;
         p.velocity = 0;
       }
     });

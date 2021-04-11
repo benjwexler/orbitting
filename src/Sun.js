@@ -1,14 +1,20 @@
 
 
-import React, { useState, useRef, useMemo, Suspense } from 'react';
+import React, { useEffect, useState, useRef, useMemo, Suspense } from 'react';
 import { SpinningMesh } from "./App";
 
 import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useLoader, useFrame } from "react-three-fiber";
-import { useSpring, a } from "react-spring/three";
+import { useSpring, a } from "@react-spring/three";
 import { degrees_to_radians } from './Earth';
+import { useActiveElementContext } from './context/ActiveElementContext';
+import useStore from './context/store';
 
 const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
+  // const context = useActiveElementContext();
+  const { setActiveElement } = useStore();
+  // const setActiveElement = () => {  }
+  // console.log('context', context)
   const origX = 3
   const coords = useRef({ x: 0, y: 0, z: 0 });
   const angle = useRef(0);
@@ -22,7 +28,12 @@ const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
   }
   )
 
-  console.log("HOVER", hover)
+  useEffect(() => {
+    const activeElement = hover ? ({name: 'Sun'}) : undefined;
+    setActiveElement(activeElement)
+  }, [hover])
+
+  // console.log("HOVER", hover)
 
   // const { x } = useSpring({ x: hover ? 6 : 3 })
   // console.log('x', x)
@@ -44,7 +55,6 @@ const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
   const texture = useLoader(TextureLoader, 'sunTexture.jpg')
   // console.log('texture', texture)
   const spotlightIntensity = .4
-  console.log('spo', spotlightIntensity)
   // const { spotlightIntensity } = useSpring({ spotlightIntensity: hover ? 1.45 : .4 })
   // const spotlightZ
   return (
