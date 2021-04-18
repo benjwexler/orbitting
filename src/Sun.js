@@ -11,103 +11,81 @@ import { useActiveElementContext } from './context/ActiveElementContext';
 import useStore from './context/store';
 
 const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
-  // const context = useActiveElementContext();
-  const { setActiveElement } = useStore();
-  // const setActiveElement = () => {  }
-  // console.log('context', context)
+  const { activeElement, setActiveElement, getIsMobile } = useStore();
   const origX = 3
   const coords = useRef({ x: 0, y: 0, z: 0 });
   const angle = useRef(0);
   const mesh = useRef()
-  const [hover, setHover] = useState(false)
-  const [active, setActive] = useState(false)
+  const isActive = activeElement?.name === 'Sun';
+  const isMobile = getIsMobile();
+
+  const getScale = () => {
+    const largeArr = [4, 4, 4];
+    const smallArr = [3, 3, 3];
+    const arr = isActive ? largeArr : smallArr;
+    if(!isMobile) return arr
+    return arr.map(val => val * .9)
+  }
 
   const { scale, _spotlightIntensity } = useSpring({ 
-    scale: hover ? [4, 4, 4] : [3, 3, 3],
-    _spotlightIntensity: !hover ? .5 : .4,
+    scale: getScale(),
+    _spotlightIntensity: !isActive ? .5 : .4,
   }
   )
 
-  useEffect(() => {
-    const activeElement = hover ? ({name: 'Sun'}) : undefined;
-    setActiveElement(activeElement)
-  }, [hover])
-
-  // console.log("HOVER", hover)
-
-  // const { x } = useSpring({ x: hover ? 6 : 3 })
-  // console.log('x', x)
-
-  const sunRef = useRef();
-
   useFrame(() => {
-    // const coords = toScreenPosition(mesh.current);
-    // if(tooltipRef && tooltipRef.current) {
-    //   tooltipRef.current.style.left = `${coords.x}px`
-    //   tooltipRef.current.style.top = `${coords.y}px`
-    // }
     if(isPaused) return;
-    // if(sunRef && sunRef.current) {
     mesh.current.rotateY(degrees_to_radians(.3))
-    // }
   })
 
   const texture = useLoader(TextureLoader, 'sunTexture.jpg')
-  // console.log('texture', texture)
   const spotlightIntensity = .4
-  // const { spotlightIntensity } = useSpring({ spotlightIntensity: hover ? 1.45 : .4 })
-  // const spotlightZ
+
+  const spotlightProps = {
+    angle: Math.PI / 150,
+    penumbra: 0.5,
+    // distance: isMobile ? 150 : 300,
+    distance: 300,
+    intensity: spotlightIntensity,
+  }
+
+  // const getPosition = (position) => {
+  //   if(!isMobile || true) return position
+
+  //   return position.map(val => val * .75)
+  // }
   return (
     <>
     <spotLight
-        // ref={spotLightRef}
-        // angle={Math.PI / 10}
-        // penumbra={0.5}
-        // decay={2}
-        // distance={20}
         intensity={spotlightIntensity}
-        position={[0, 0, 10]}
+        position={[0, 0, isMobile ? 7 : 10]}
       />
       <spotLight
-        // ref={spotLightRef}
         angle={Math.PI / 150}
-        penumbra={0.5}
-        // decay={2}
-        distance={300}
-        intensity={spotlightIntensity}
+        {...spotlightProps}
         position={[-100, 100, 50]}
       />
       <spotLight
         angle={Math.PI / 150}
-        penumbra={0.5}
-        // decay={2}
-        distance={300}
-        intensity={spotlightIntensity}
+        {...spotlightProps}
         position={[100, 100, 50]}
       />
        <spotLight
         angle={Math.PI / 150}
-        penumbra={0.5}
-        // decay={2}
-        distance={300}
-        intensity={spotlightIntensity}
+        {...spotlightProps}
         position={[100, -100, 50]}
       />
       <spotLight
         angle={Math.PI / 150}
-        penumbra={0.5}
-        // decay={2}
-        // distance={300}
-        intensity={spotlightIntensity}
+        {...spotlightProps}
         position={[-100, -100, 50]}
       />
     <SpinningMesh
       layers={2}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
+      onPointerOver={(event) => setActiveElement({ name: 'Sun' })}
+      onPointerOut={(event) => isActive ? setActiveElement(null) : undefined}
       isPaused={isPaused}
-      // mesh={sunRef}
-      scale={useMemo(() => scale, [hover])} hover={hover} texture={texture} mesh={mesh} />
+      scale={useMemo(() => scale, [isActive])} hover={isActive} texture={texture} mesh={mesh} />
       </>
   )
 

@@ -10,29 +10,21 @@ import { MeshWobbleMaterial, OrbitControls } from '@react-three/drei'
 import Earth from "./Earth";
 import Sun from "./Sun";
 import Scene from "./Scene";
-import ActiveElementContextProvider from "./context/ActiveElementContext";
 import GlobalContextProviders from "./context/GlobalContextProviders";
 import useStore from "./context/store";
 import Info from "./Info";
+import TrackScreenSize from './TrackScreenSize';
 
 
-
-function degrees_to_radians(degrees) {
-  var pi = Math.PI;
-  return degrees * (pi / 180);
-}
-
-export const SpinningMesh = ({ isPaused, rotation, layers, position, mesh, scale, texture, children, onPointerOver, onPointerOut }) => {
+export const SpinningMesh = ({ isPaused, rotation, position, mesh, scale, texture, children, onPointerOver, onPointerOut }) => {
 
   return (
     <a.mesh
-      // layers={layers}
       scale={scale}
       rotation={rotation}
       onPointerOver={onPointerOver}
       onPointerOut={onPointerOut}
       position={position}
-      // position={[x, y, z]}
       ref={mesh}
       castShadow>
       <sphereGeometry attach='geometry' args={[1, 16, 16]} />
@@ -54,28 +46,11 @@ SpinningMesh.defaultProps = {
 
 
 const App = () => {
-  const { activeElement } = useStore();
-  // console.log('activeElement', activeElement)
-  // const activeElement = null;
-  const [cameraPosition, setCameraPosition] = useState({ x: 0, y: 0, z: 120 })
-  const [height, setHeight] = useState(11.5);
+  const { activeElement, getIsMobile } = useStore();
+  const height = 11.5;
   const [isPaused, setIsPaused] = useState(false);
   const canvasRef = useRef();
   const tooltipRef = useRef();
-
-  const { opacity, height: infoBodyHeight } = useS({
-    config: { duration: 250 },
-    opacity: activeElement ? 1 : 0,
-    height: activeElement ? '100%' : '25%',
-  });
-
-  const { opacity: headerOpacity } = useS({
-    config: { duration: 250 },
-    opacity: activeElement ? 1 : 0,
-    delay: 50
-  });
-
-  // console.log('head', headerSpring.opacity)
 
   useEffect(() => {
 
@@ -94,58 +69,60 @@ const App = () => {
 
   return (
     <GlobalContextProviders>
-      <Canvas
-        colorManagement
-        shadowMap
-        camera={{ position: [0, 0, 20], fov: 90 }}
-        onClick={() => setIsPaused(prevVal => !prevVal)}
-      >
-        <Scene
-          isPaused={isPaused}
-          canvasRef={canvasRef}
-          tooltipRef={tooltipRef}
-        />
-        {/* Allows us to move the canvas around for different prespectives */}
-        {/* <OrbitControls />/ */}
-      </Canvas>
-      <div style={{
-        position: 'absolute', minHeight: `${height}vh`, width: '100vw',
-        background: 'black',
-        fontSize: 28,
-        fontWight: 400,
-        fontFamily: 'monospace',
-        top: 0,
-        display: 'flex',
-      }}>
-        <div style={{ padding: 20, paddingLeft: 25, marginTop: 'auto', marginBottom: 'auto', display: 'flex', width: '100%' }}>
+    <TrackScreenSize />
+        <Canvas
+          colorManagement
+          shadowMap
+          camera={{ position: [0, 0, 20], fov: 90 }}
+          onClick={() => setIsPaused(prevVal => !prevVal)}
+        // onPointerMove={ev => console.log('ev', ev.target)}
+        >
+          <Scene
+            isPaused={isPaused}
+            canvasRef={canvasRef}
+            tooltipRef={tooltipRef}
+          />
+          {/* Allows us to move the canvas around for different prespectives */}
+          {/* <OrbitControls />/ */}
+        </Canvas>
+        <div style={{
+          position: 'absolute', minHeight: `${height}vh`, width: '100vw',
+          background: 'black',
+          fontSize: getIsMobile() ? 25 : 28,
+          fontWight: 400,
+          fontFamily: 'monospace',
+          top: 0,
+          display: 'flex',
+        }}>
+          <div style={{ padding: 20, paddingLeft: 25, marginTop: 'auto', marginBottom: 'auto', display: 'flex', width: '100%' }}>
 
-          <div>{height <= 11.5 ? 'Orbitting with React-Three-Fiber' : ''}</div>
-          <div style={{ marginLeft: 'auto', marginRight: 15 }}>
+            <div className="title-header">
+            Orbitting <span style={{fontSize: 16, marginLeft: -5}}>
+            by&nbsp;<a className="my-name-link" href='https://www.linkedin.com/in/benjwexler/'>Ben Wexler</a>
+            </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div style={{
-        minHeight: `${height}vh`,
-        width: '100vw',
-        background: 'black',
-        bottom: 0, left: 0, position: 'absolute',
-        display: 'flex',
-        fontSize: 28,
-        fontWight: 400,
-      }}>
+        <div style={{
+          minHeight: `${height}vh`,
+          width: '100vw',
+          background: 'black',
+          bottom: 0, left: 0, position: 'absolute',
+          display: 'flex',
+          fontSize: 28,
+          fontWight: 400,
+        }}>
 
-        <div style={{ margin: 'auto' }}>
-          <i onClick={() => setIsPaused(prevVal => !prevVal)} className={`fas ${isPaused ? 'fa-play' : 'fa-pause'}`} />
+          <div style={{ margin: 'auto' }}>
+            <i onClick={() => setIsPaused(prevVal => !prevVal)} className={`fas ${isPaused ? 'fa-play' : 'fa-pause'}`} />
+          </div>
         </div>
-      </div>
-      <div ref={tooltipRef} id="tooltip" style={{ position: 'absolute', color: 'white' }}>Sun</div>
+        <div ref={tooltipRef} id="tooltip" style={{ position: 'absolute', color: 'white' }}>Sun</div>
 
-
-    <Info
-      isPaused={isPaused} 
-      height={height}
-    />
-
+        <Info
+          isPaused={isPaused}
+          height={height}
+        />
     </GlobalContextProviders>
   );
 };

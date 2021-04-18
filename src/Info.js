@@ -5,8 +5,24 @@ import {get} from 'lodash';
 import useStore from "./context/store";
 
 const facts = {
-  Earth: [1, 2, 3],
-  Sun: [4, 5, 6],
+  Earth: [
+    'Earth is the only planet known to support life because it has two very important things that living creatures need to survive –– lots of oxygen and lots of water.',
+    'The Earth’s diameter measures a huge 12,800 kilometres, making it the fifth largest planet in the solar system.',
+    'Earth spinning on its axis is why we have daytime and nighttime. As the planet rotates, the side facing the sun receives daylight and the the other is in darkness.'
+  ],
+  Sun: [
+    'The Sun is a star found at the center of the Solar System.',
+    'Light from the Sun reaches Earth in around 8 minutes.',
+    'At around 1,392,000 kilometres (865,000 miles) wide, the Sun’s diameter is about 110 times wider than Earth’s.',
+  ],
+  'Moon': [
+    'The moon was created when a rock the size of Mars slammed into Earth, shortly after the solar system began forming about 4.5 billion years ago.',
+    'The Moon is drifting away from the Earth. The Moon is moving approximately 3.8 cm away from our planet every year.',
+    `The Sun and the Moon aren't the same size, even though they look it from earth. This is because the moon is 400x smaller than the sun, but 400x closer than the sun to earth.`
+    
+    // From Earth, both the Sun and the Moon look about same size. This is because the Moon is 400x smaller than the Sun, but also 400x closer to Earth.',
+
+  ]
 }
 
 const Info = ({
@@ -31,7 +47,7 @@ const Info = ({
   const [progressBars, setProgressBars] = useState(initProgressBar)
   // console.log('progressBar', progressBars)
   const {transform} = useS({
-    // pause: isPaused,
+    pause: !activeElement,
     reset: !activeElement,
     // cancel: isPaused && !activeElement,
     // loop: true,
@@ -127,7 +143,7 @@ const getFact = () => {
       // opacity={opacity}
       style={{
         height: '30%',
-        // maxHeight: 200,
+        maxHeight: 260,
         maxWidth: 360,
         width: '40%',
         position: 'absolute',

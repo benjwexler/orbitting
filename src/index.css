@@ -6,6 +6,7 @@ body {
   color: #606063;
   overflow: hidden;
   font-family: "News Cycle", sans-serif;
+  /* font-family: 'Zen Dots', cursive !important; */
 }
 
 #root {
