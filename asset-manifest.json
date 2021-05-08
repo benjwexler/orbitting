@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/orbitting/static/css/main.b9fa55ad.chunk.css",
+    "main.js": "/orbitting/static/js/main.edfe72a8.chunk.js",
+    "main.js.map": "/orbitting/static/js/main.edfe72a8.chunk.js.map",
+    "runtime-main.js": "/orbitting/static/js/runtime-main.41dfe51e.js",
+    "runtime-main.js.map": "/orbitting/static/js/runtime-main.41dfe51e.js.map",
+    "static/js/2.52a657b6.chunk.js": "/orbitting/static/js/2.52a657b6.chunk.js",
+    "static/js/2.52a657b6.chunk.js.map": "/orbitting/static/js/2.52a657b6.chunk.js.map",
+    "static/js/3.21ffe325.chunk.js": "/orbitting/static/js/3.21ffe325.chunk.js",
+    "static/js/3.21ffe325.chunk.js.map": "/orbitting/static/js/3.21ffe325.chunk.js.map",
+    "index.html": "/orbitting/index.html",
+    "static/css/main.b9fa55ad.chunk.css.map": "/orbitting/static/css/main.b9fa55ad.chunk.css.map",
+    "static/js/2.52a657b6.chunk.js.LICENSE.txt": "/orbitting/static/js/2.52a657b6.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/orbitting/static/media/milkyWay.e108660f.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.41dfe51e.js",
+    "static/js/2.52a657b6.chunk.js",
+    "static/css/main.b9fa55ad.chunk.css",
+    "static/js/main.edfe72a8.chunk.js"
+  ]
+}
