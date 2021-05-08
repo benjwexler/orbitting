@@ -69,60 +69,60 @@ const App = () => {
 
   return (
     <GlobalContextProviders>
-    <TrackScreenSize />
-        <Canvas
-          colorManagement
-          shadowMap
-          camera={{ position: [0, 0, 20], fov: 90 }}
-          onClick={() => setIsPaused(prevVal => !prevVal)}
-        // onPointerMove={ev => console.log('ev', ev.target)}
-        >
-          <Scene
-            isPaused={isPaused}
-            canvasRef={canvasRef}
-            tooltipRef={tooltipRef}
-          />
-          {/* Allows us to move the canvas around for different prespectives */}
-          {/* <OrbitControls />/ */}
-        </Canvas>
-        <div style={{
-          position: 'absolute', minHeight: `${height}vh`, width: '100vw',
-          background: 'black',
-          fontSize: getIsMobile() ? 25 : 28,
-          fontWight: 400,
-          fontFamily: 'monospace',
-          top: 0,
-          display: 'flex',
-        }}>
-          <div style={{ padding: 20, paddingLeft: 25, marginTop: 'auto', marginBottom: 'auto', display: 'flex', width: '100%' }}>
-
-            <div className="title-header">
-            Orbitting <span style={{fontSize: 16, marginLeft: -5}}>
-            by&nbsp;<a className="my-name-link" href='https://www.linkedin.com/in/benjwexler/'>Ben Wexler</a>
-            </span>
-            </div>
-          </div>
-        </div>
-        <div style={{
-          minHeight: `${height}vh`,
-          width: '100vw',
-          background: 'black',
-          bottom: 0, left: 0, position: 'absolute',
-          display: 'flex',
-          fontSize: 28,
-          fontWight: 400,
-        }}>
-
-          <div style={{ margin: 'auto' }}>
-            <i onClick={() => setIsPaused(prevVal => !prevVal)} className={`fas ${isPaused ? 'fa-play' : 'fa-pause'}`} />
-          </div>
-        </div>
-        <div ref={tooltipRef} id="tooltip" style={{ position: 'absolute', color: 'white' }}>Sun</div>
-
-        <Info
+      <TrackScreenSize />
+      <Canvas
+        colorManagement
+        shadowMap
+        camera={{ position: [0, 0, 20], fov: 90 }}
+        onClick={() => setIsPaused(prevVal => !prevVal)}
+      // onPointerMove={ev => console.log('ev', ev.target)}
+      >
+        <Scene
           isPaused={isPaused}
-          height={height}
+          canvasRef={canvasRef}
+          tooltipRef={tooltipRef}
         />
+        {/* Allows us to move the canvas around for different prespectives */}
+        {/* <OrbitControls />/ */}
+      </Canvas>
+      <div style={{
+        position: 'absolute', minHeight: `${height}vh`, width: '100vw',
+        background: 'black',
+        fontSize: getIsMobile() ? 25 : 28,
+        fontWight: 400,
+        fontFamily: 'monospace',
+        top: 0,
+        display: 'flex',
+      }}>
+        <div style={{ padding: 20, paddingLeft: getIsMobile() ? 20 : 25, marginTop: 'auto', marginBottom: 'auto', display: 'flex', width: '100%' }}>
+
+          <div className="title-header">
+            Orbitting <span style={{ fontSize: 16, marginLeft: -5 }}>
+              by&nbsp;<a className="my-name-link" href='https://www.linkedin.com/in/benjwexler/'>Ben Wexler</a>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div style={{
+        minHeight: `${height}vh`,
+        width: '100vw',
+        background: 'black',
+        bottom: 0, left: 0, position: 'absolute',
+        display: 'flex',
+        fontSize: 28,
+        fontWight: 400,
+      }}>
+
+        <div style={{ margin: 'auto' }}>
+          <i onClick={() => setIsPaused(prevVal => !prevVal)} className={`fas ${isPaused ? 'fa-play' : 'fa-pause'}`} />
+        </div>
+      </div>
+      <div ref={tooltipRef} id="tooltip" style={{ position: 'absolute', color: 'white' }}>Sun</div>
+
+      {getIsMobile() ? null : (<Info
+        isPaused={isPaused}
+        height={height}
+      />)}
     </GlobalContextProviders>
   );
 };
