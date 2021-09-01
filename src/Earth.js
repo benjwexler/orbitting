@@ -8,11 +8,16 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useFrame, useLoader, useThree } from "react-three-fiber";
 import { useSpring, a } from "@react-spring/three";
 import useStore from './context/store';
+import earthImg from './images/earthTexture.jpg';
+import moonImg from './images/moonTexture.jpg';
+
 
 export function degrees_to_radians(degrees) {
   var pi = Math.PI;
   return degrees * (pi / 180);
 }
+
+export const standardRefreshTime = 1 / 60;
 
 const Earth = ({ isPaused }) => {
   const { setActiveElement, activeElement, getIsMobile, } = useStore();
@@ -28,12 +33,20 @@ const Earth = ({ isPaused }) => {
   const earthMesh = useRef();
   const moonMeshReal = useRef();
 
-  const [hover, setHover] = useState(false)
+  const [hover, setHover] = useState(false);
+
+  const clockRef = useRef(new THREE.Clock());
+  const clock = clockRef.current; 
+  const prevTime = useRef(0);
 
   useFrame(() => {
+    const currentTime = clock.getElapsedTime();
+    const ratio = (currentTime - prevTime.current) / standardRefreshTime;
+    prevTime.current = currentTime;
+
     if (isPaused) return;
-    angle.current -= .25;
-    moonAngle.current -= 3.38
+    angle.current -= .25 * ratio;
+    moonAngle.current -= 3.38 * ratio
     const radians = degrees_to_radians(angle.current);
     const newX = origX * Math.cos(radians)
     const newZ = origX * Math.sin(radians)
@@ -53,23 +66,23 @@ const Earth = ({ isPaused }) => {
     mesh.current.visible = false;
     moonMesh.current.material.visible = false;
     earthMesh.current.position.setFromMatrixPosition(mesh.current.matrixWorld)
-    earthMesh.current.rotateY(degrees_to_radians(2.5))
+    earthMesh.current.rotateY(degrees_to_radians(2.5) * ratio)
     moonMesh.current.position.setFromMatrixPosition(dummyMesh.current.matrixWorld)
   })
 
-  const texture = useLoader(TextureLoader, 'earthTexture.jpg')
-  const moonTexture = useLoader(TextureLoader, 'moonTexture.jpg')
+  const texture = useLoader(TextureLoader, earthImg)
+  const moonTexture = useLoader(TextureLoader, moonImg)
 
   const scaleActiveElement = (sizeArr, element, activeElementName) => {
-    if(element !== activeElementName) return sizeArr
+    if (element !== activeElementName) return sizeArr
 
-    return sizeArr.map(val => val* 3)
-     
+    return sizeArr.map(val => val * 3)
+
   }
 
   const { scale, moonScale } = useSpring({
-    scale: activeElement?.name === 'Earth' ? [1.5, 1.5, 1.5] : [.5, .5, .5],
-    moonScale: activeElement?.name === 'Moon' ? [1, 1, 1] : [.25, .25, .25],
+    scale: activeElement ?.name === 'Earth' ? [1.5, 1.5, 1.5] : [.5, .5, .5],
+    moonScale: activeElement ?.name === 'Moon' ? [1, 1, 1] : [.25, .25, .25],
   });
 
   return (
@@ -91,10 +104,10 @@ const Earth = ({ isPaused }) => {
         mesh={earthMesh}
         isPaused={isPaused}
         layers={3}
-        scale={useMemo(() => scale, [activeElement?.name])}
+        scale={useMemo(() => scale, [activeElement ?.name])}
         texture={texture}
         onPointerOver={(event) => setActiveElement({ name: 'Earth' })}
-        onPointerOut={(event) => (activeElement?.name === 'Earth') ? setActiveElement(null) : undefined}
+        onPointerOut={(event) => (activeElement ?.name === 'Earth') ? setActiveElement(null) : undefined}
 
       />
       <SpinningMesh
@@ -107,9 +120,9 @@ const Earth = ({ isPaused }) => {
         <SpinningMesh
           mesh={moonMeshReal}
           texture={moonTexture}
-          scale={useMemo(() => moonScale, [activeElement?.name])}
+          scale={useMemo(() => moonScale, [activeElement ?.name])}
           onPointerOver={(ev) => setActiveElement({ name: 'Moon' })}
-          onPointerOut={(ev) => (activeElement?.name === 'Moon') ? setActiveElement(null) : undefined}
+          onPointerOut={(ev) => (activeElement ?.name === 'Moon') ? setActiveElement(null) : undefined}
         />
 
       </SpinningMesh>

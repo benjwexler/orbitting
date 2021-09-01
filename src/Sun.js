@@ -1,14 +1,15 @@
 
 
-import React, { useEffect, useState, useRef, useMemo, Suspense } from 'react';
+import React, { useRef, useMemo } from 'react';
+import * as THREE from "three";
 import { SpinningMesh } from "./App";
 
 import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useLoader, useFrame } from "react-three-fiber";
 import { useSpring, a } from "@react-spring/three";
-import { degrees_to_radians } from './Earth';
-import { useActiveElementContext } from './context/ActiveElementContext';
+import { degrees_to_radians, standardRefreshTime } from './Earth';
 import useStore from './context/store';
+import sunImg from './images/sunTexture.jpg';
 
 const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
   const { activeElement, setActiveElement, getIsMobile } = useStore();
@@ -33,12 +34,25 @@ const Sun = ({isPaused, toScreenPosition, tooltipRef}) => {
   }
   )
 
+  const clockRef = useRef(new THREE.Clock());
+  const clock = clockRef.current;
+  const prevTime = useRef(0);
+
   useFrame(() => {
+
+    
+
+    const currentTime = clock.getElapsedTime();
+    const ratio = (currentTime - prevTime.current) / standardRefreshTime;
+    prevTime.current = currentTime;
+
+    
     if(isPaused) return;
-    mesh.current.rotateY(degrees_to_radians(.3))
+    mesh.current.rotateY(degrees_to_radians(.3) * ratio)
   })
 
-  const texture = useLoader(TextureLoader, 'sunTexture.jpg')
+  const texture = useLoader(TextureLoader, sunImg)
+
   const spotlightIntensity = .4
 
   const spotlightProps = {

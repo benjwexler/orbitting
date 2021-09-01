@@ -81,6 +81,7 @@ header {
   background: white;
   transform: scaleX(0);
   transform-origin: left;
+  z-index: 99999999999;
 }
 
 .title-header {

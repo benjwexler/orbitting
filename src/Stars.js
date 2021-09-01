@@ -3,6 +3,9 @@ import React, {useMemo, useRef} from 'react';
 import * as THREE from 'three'
 import { TextureLoader } from 'three/src/loaders/TextureLoader.js';
 import { useFrame, useLoader } from "react-three-fiber";
+import starImg from './images/star.png';
+import { standardRefreshTime } from './Earth';
+
 
 const Stars = ({isPaused}) => {
 
@@ -23,13 +26,21 @@ const pointsRef = useRef();
 
   }, [])
   
-  const texture = useLoader(TextureLoader, 'star.png')
+  const texture = useLoader(TextureLoader, starImg)
   const ref = useRef();
+
+  const clockRef = useRef(new THREE.Clock());
+  const clock = clockRef.current;
+  const prevTime = useRef(0);
 
   useFrame(() => {
     if(isPaused) return;
+    const currentTime = clock.getElapsedTime();
+    const ratio = (currentTime - prevTime.current) / standardRefreshTime;
+    prevTime.current = currentTime;
+
     vertices.forEach(p => {
-      p.z += p.acceleration
+      p.z += (p.acceleration * ratio)
       
       if (p.z > -40) {
         p.z = -90;

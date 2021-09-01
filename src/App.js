@@ -1,14 +1,10 @@
-import React, { useRef, useEffect, useState, useLayoutEffect, Suspense } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
-import { Canvas, useFrame, useThree } from "react-three-fiber";
-import * as THREE from "three";
+import { Canvas } from "react-three-fiber";
 import "./App.css";
 
-import { useSpring, a } from "@react-spring/three";
-import { useSpring as useS, animated } from "@react-spring/web";
-import { MeshWobbleMaterial, OrbitControls } from '@react-three/drei'
-import Earth from "./Earth";
-import Sun from "./Sun";
+import { a } from "@react-spring/three";
+import { MeshWobbleMaterial } from '@react-three/drei'
 import Scene from "./Scene";
 import GlobalContextProviders from "./context/GlobalContextProviders";
 import useStore from "./context/store";
